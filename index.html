@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHOCO CRAFT - ช็อกโกแลตแท่งพรีเมียม</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Prompt', sans-serif; }
+    @media print {
+      body * { visibility: hidden; }
+      #printArea, #printArea * { visibility: visible; }
+      #printArea { position: absolute; left: 0; top: 0; width: 100%; border: none; }
+    }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-800 min-h-screen flex flex-col">
+
+  <!-- ==================== 1. ส่วนหน้าร้านสำหรับลูกค้า (STOREFRONT) ==================== -->
+  <div id="storeView" class="flex-1">
+    <!-- Hero Section -->
+    <header class="bg-amber-950 text-amber-50 py-16 px-6 text-center relative">
+      <div class="max-w-3xl mx-auto">
+        <span class="uppercase tracking-widest text-amber-300 text-sm font-semibold">Single Origin Bean-to-Bar</span>
+        <h1 class="text-4xl md:text-5xl font-bold mt-2 mb-4">CHOCO CRAFT THAILAND</h1>
+        <p class="text-amber-200/90 text-lg">ช็อกโกแลตแท่งทำมือ คัดสรรเมล็ดโกโก้คุณภาพเยี่ยม เข้มข้น ละมุนลิ้น</p>
+      </div>
+    </header>
+
+    <!-- Product Selection & Form -->
+    <main class="max-w-4xl mx-auto py-12 px-6">
+      <h2 class="text-2xl font-bold text-center mb-8 text-amber-950">เลือกรสชาติที่คุณชื่นชอบ</h2>
+      
+      <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <!-- SKU 1 -->
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-stone-200 flex flex-col">
+          <img src="./images/dark-choc.jpg" onerror="this.src='https://placehold.co/600x400/3e2723/ffffff?text=70%25+Dark+Chocolate'" alt="70% Dark Chocolate" class="w-full h-56 object-cover bg-stone-200">
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start">
+                <h3 class="text-xl font-bold text-amber-950">70% Dark Chocolate</h3>
+                <span class="bg-amber-100 text-amber-900 text-xs font-bold px-2.5 py-1 rounded">SKU-01</span>
+              </div>
+              <p class="text-stone-600 text-sm mt-2">ดาร์กช็อกโกแลตเข้มข้น 70% หอมกลิ่นผลไม้ตระกูลเบอร์รี่ หวานน้อย</p>
+            </div>
+            <div class="mt-6 flex items-center justify-between pt-4 border-t border-stone-100">
+              <span class="text-xl font-bold text-amber-800">฿180</span>
+              <div class="flex items-center space-x-3">
+                <button type="button" onclick="updateQty('sku1', -1)" class="w-8 h-8 rounded-full bg-stone-200 hover:bg-stone-300 font-bold">-</button>
+                <span id="sku1-qty" class="font-bold text-lg w-6 text-center">0</span>
+                <button type="button" onclick="updateQty('sku1', 1)" class="w-8 h-8 rounded-full bg-amber-800 text-white hover:bg-amber-900 font-bold">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SKU 2 -->
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-stone-200 flex flex-col">
+          <img src="./images/milk-choc.jpg" onerror="this.src='https://placehold.co/600x400/5d4037/ffffff?text=Hazelnut+Milk+Chocolate'" alt="Hazelnut Milk Chocolate" class="w-full h-56 object-cover bg-stone-200">
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start">
+                <h3 class="text-xl font-bold text-amber-950">Hazelnut Milk Chocolate</h3>
+                <span class="bg-amber-100 text-amber-900 text-xs font-bold px-2.5 py-1 rounded">SKU-02</span>
+              </div>
+              <p class="text-stone-600 text-sm mt-2">มิลค์ช็อกโกแลตเนื้อเนียนนุ่ม ผสมเฮเซลนัทอบกรอบเต็มคำ</p>
+            </div>
+            <div class="mt-6 flex items-center justify-between pt-4 border-t border-stone-100">
+              <span class="text-xl font-bold text-amber-800">฿200</span>
+              <div class="flex items-center space-x-3">
+                <button type="button" onclick="updateQty('sku2', -1)" class="w-8 h-8 rounded-full bg-stone-200 hover:bg-stone-300 font-bold">-</button>
+                <span id="sku2-qty" class="font-bold text-lg w-6 text-center">0</span>
+                <button type="button" onclick="updateQty('sku2', 1)" class="w-8 h-8 rounded-full bg-amber-800 text-white hover:bg-amber-900 font-bold">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checkout Form -->
+      <form id="orderForm" class="bg-white p-8 rounded-2xl shadow-md border border-stone-200 max-w-2xl mx-auto">
+        <h3 class="text-xl font-bold mb-6 text-amber-950 border-b pb-3">ข้อมูลจัดส่งสินค้า</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">ชื่อ-นามสกุล ผู้รับ *</label>
+            <input type="text" id="customerName" required class="w-full border border-stone-300 rounded-lg px-4 py-2 focus:outline-none focus:border-amber-800">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">เบอร์โทรศัพท์ *</label>
+            <input type="tel" id="phone" required class="w-full border border-stone-300 rounded-lg px-4 py-2 focus:outline-none focus:border-amber-800">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">ที่อยู่จัดส่ง (พร้อมรหัสไปรษณีย์) *</label>
+            <textarea id="address" rows="3" required class="w-full border border-stone-300 rounded-lg px-4 py-2 focus:outline-none focus:border-amber-800"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">หมายเหตุถึงร้านค้า (ถ้ามี)</label>
+            <input type="text" id="notes" placeholder="เช่น ฝากไว้ที่ป้อมยาม" class="w-full border border-stone-300 rounded-lg px-4 py-2 focus:outline-none focus:border-amber-800">
+          </div>
+        </div>
+
+        <div class="mt-6 bg-amber-50 p-4 rounded-xl flex justify-between items-center">
+          <div>
+            <p class="text-sm text-stone-600">ยอดชำระทั้งหมด (ส่งฟรี)</p>
+            <p id="summaryText" class="text-xs text-stone-500">ยังไม่ได้เลือกสินค้า</p>
+          </div>
+          <div class="text-2xl font-bold text-amber-950">฿<span id="totalPrice">0</span></div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="w-full mt-6 bg-amber-900 hover:bg-amber-950 text-white font-bold py-3.5 rounded-xl transition">
+          ยืนยันการสั่งซื้อ
+        </button>
+      </form>
+    </main>
+  </div>
+
+  <!-- ==================== 2. ส่วนหลังบ้านสำหรับแพ็คสินค้า (ADMIN VIEW) ==================== -->
+  <div id="adminView" class="hidden flex-1 bg-stone-100 p-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex flex-wrap justify-between items-center gap-4 mb-6 bg-white p-5 rounded-xl shadow-sm border border-stone-200">
+        <div>
+          <h1 class="text-2xl font-bold text-amber-950">ระบบหยิบสินค้า & แพ็คพัสดุ</h1>
+          <p class="text-sm text-stone-500">ดึงข้อมูลจาก Google Sheets เพื่อจัดเตรียมสินค้าและพิมพ์ใบจ่าหน้า</p>
+        </div>
+        <div class="flex space-x-2">
+          <button onclick="fetchOrders()" class="bg-amber-900 text-white px-4 py-2 rounded-lg text-sm hover:bg-amber-950">
+            รีเฟรชออเดอร์
+          </button>
+          <button onclick="switchToStore()" class="bg-stone-200 text-stone-800 px-4 py-2 rounded-lg text-sm hover:bg-stone-300">
+            กลับหน้าร้านค้า
+          </button>
+        </div>
+      </div>
+
+      <div id="ordersContainer" class="space-y-4">
+        <p class="text-center py-10 text-stone-500">กำลังโหลดข้อมูลออเดอร์...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer พร้อมปุ่มเข้าสู่ระบบหลังบ้าน -->
+  <footer class="bg-stone-900 text-stone-400 text-center py-6 text-sm mt-12">
+    <p>© 2026 CHOCO CRAFT THAILAND. All rights reserved.</p>
+    <button onclick="openAdminAuth()" class="mt-2 text-xs text-stone-500 hover:text-amber-300 underline">
+      เข้าสู่ระบบจัดการหลังบ้าน / แพ็คสินค้า
+    </button>
+  </footer>
+
+  <!-- ==================== 3. MODAL พิมพ์ใบจ่าหน้าพัสดุ ==================== -->
+  <div id="labelModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl">
+      <div id="printArea" class="border-2 border-black p-5 text-black bg-white">
+        <div class="border-b-2 border-black pb-2 mb-3 flex justify-between items-center">
+          <span class="font-bold text-lg">CHOCO CRAFT</span>
+          <span id="lblOrderId" class="font-mono font-bold text-sm"></span>
+        </div>
+        <div class="text-xs mb-3">
+          <p class="font-bold">ผู้ส่ง (FROM):</p>
+          <p>ร้าน CHOCO CRAFT โทร. 081-234-5678</p>
+          <p>123 ถ.สุขุมวิท แขวงคลองเตย เขตคลองเตย กทม. 10110</p>
+        </div>
+        <div class="border-t border-dashed border-black pt-3 mb-4">
+          <p class="font-bold text-sm">ผู้รับ (TO):</p>
+          <p id="lblName" class="font-bold text-lg mt-1"></p>
+          <p id="lblPhone" class="font-bold text-base"></p>
+          <p id="lblAddress" class="text-sm mt-1 leading-relaxed"></p>
+        </div>
+        <div class="border-t-2 border-black pt-2 text-xs bg-stone-100 p-2">
+          <p class="font-bold">รายการสินค้าภายในกล่อง (Packing List):</p>
+          <p id="lblItems" class="mt-1 font-medium"></p>
+          <p id="lblNotes" class="mt-1 text-stone-600"></p>
+        </div>
+      </div>
+
+      <div class="mt-4 flex space-x-3">
+        <button onclick="window.print()" class="flex-1 bg-amber-900 text-white py-2.5 rounded-lg font-bold hover:bg-amber-950">
+          สั่งพิมพ์ใบจ่าหน้า
+        </button>
+        <button onclick="closeModal()" class="px-4 py-2.5 bg-stone-200 rounded-lg font-medium hover:bg-stone-300">
+          ปิด
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 4. JAVASCRIPT LOGIC ==================== -->
+  <script>
+  
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwti31kojeM16_Ysc0h2UcahOr5ejitVzHlOXan_PVvvmnSHnqvmoxBYdVfaSaYtnjU/exec'; 
+    const ADMIN_PIN = '1234'; // รหัสผ่านสำหรับเข้าหน้าแพ็คสินค้า
+
+    const prices = { sku1: 180, sku2: 200 };
+    let cart = { sku1: 0, sku2: 0 };
+
+    // ตรวจสอบ URL Parameter หากเข้าผ่าน ?admin=true ให้ถามรหัสผ่านทันที
+    if (new URLSearchParams(window.location.search).get('admin') === 'true') {
+      openAdminAuth();
+    }
+
+    // --- ระบบตะกร้าสินค้าและสั่งซื้อ ---
+    function updateQty(sku, change) {
+      if (cart[sku] + change >= 0) {
+        cart[sku] += change;
+        document.getElementById(`${sku}-qty`).innerText = cart[sku];
+        calculateTotal();
+      }
+    }
+
+    function calculateTotal() {
+      const total = (cart.sku1 * prices.sku1) + (cart.sku2 * prices.sku2);
+      document.getElementById('totalPrice').innerText = total.toLocaleString();
+      
+      let items = [];
+      if (cart.sku1 > 0) items.push(`70% Dark x${cart.sku1}`);
+      if (cart.sku2 > 0) items.push(`Hazelnut Milk x${cart.sku2}`);
+      document.getElementById('summaryText').innerText = items.length > 0 ? items.join(', ') : 'ยังไม่ได้เลือกสินค้า';
+    }
+
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const totalAmount = (cart.sku1 * prices.sku1) + (cart.sku2 * prices.sku2);
+      if (totalAmount === 0) {
+        alert('กรุณาเลือกช็อกโกแลตอย่างน้อย 1 แท่งครับ');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerText = 'กำลังบันทึกคำสั่งซื้อ...';
+
+      const payload = {
+        action: 'createOrder',
+        customerName: document.getElementById('customerName').value,
+        phone: document.getElementById('phone').value,
+        address: document.getElementById('address').value,
+        notes: document.getElementById('notes').value,
+        sku1Qty: cart.sku1,
+        sku2Qty: cart.sku2,
+        totalAmount: totalAmount
+      };
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        alert(`สั่งซื้อสำเร็จ! รหัสคำสั่งซื้อของคุณคือ ${result.orderId}`);
+        document.getElementById('orderForm').reset();
+        cart = { sku1: 0, sku2: 0 };
+        updateQty('sku1', 0);
+        updateQty('sku2', 0);
+      } catch (err) {
+        alert('เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาตรวจสอบการตั้งค่า Google Apps Script');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'ยืนยันการสั่งซื้อ';
+      }
+    });
+
+    // --- ระบบสลับหน้า Admin & Storefront ---
+    function openAdminAuth() {
+      const pin = prompt('กรุณากรอกรหัสผ่านสำหรับเข้าสู่ระบบแพ็คสินค้า:');
+      if (pin === ADMIN_PIN) {
+        document.getElementById('storeView').classList.add('hidden');
+        document.getElementById('adminView').classList.remove('hidden');
+        fetchOrders();
+      } else if (pin !== null) {
+        alert('รหัสผ่านไม่ถูกต้อง');
+      }
+    }
+
+    function switchToStore() {
+      document.getElementById('adminView').classList.add('hidden');
+      document.getElementById('storeView').classList.remove('hidden');
+    }
+
+    // --- ระบบดึงข้อมูล แพ็คสินค้า และพิมพ์ใบจ่าหน้า ---
+    async function fetchOrders() {
+      const container = document.getElementById('ordersContainer');
+      container.innerHTML = '<p class="text-center py-10 text-stone-500">กำลังโหลดข้อมูลจาก Google Sheets...</p>';
+      
+      try {
+        const res = await fetch(SCRIPT_URL);
+        const orders = await res.json();
+        renderOrders(orders);
+      } catch (err) {
+        container.innerHTML = '<p class="text-center py-10 text-red-500">ไม่สามารถโหลดข้อมูลได้ กรุณาตรวจสอบ URL ของ Apps Script</p>';
+      }
+    }
+
+    function renderOrders(orders) {
+      const container = document.getElementById('ordersContainer');
+      if (orders.length === 0) {
+        container.innerHTML = '<p class="text-center py-10 text-stone-500">ยังไม่มีรายการสั่งซื้อ</p>';
+        return;
+      }
+
+      container.innerHTML = orders.map(order => {
+        const isPacked = order.Status === 'แพ็คแล้ว / จัดส่งแล้ว';
+        return `
+          <div class="bg-white p-6 rounded-xl shadow-sm border ${isPacked ? 'border-green-300 bg-green-50/30' : 'border-stone-200'}">
+            <div class="flex flex-wrap justify-between items-start gap-4 border-b pb-4">
+              <div>
+                <div class="flex items-center space-x-3">
+                  <span class="font-bold text-lg text-amber-950">${order.OrderID}</span>
+                  <span class="text-xs px-2.5 py-1 rounded-full font-semibold ${isPacked ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'}">
+                    ${order.Status}
+                  </span>
+                </div>
+                <p class="text-xs text-stone-400 mt-1">สั่งเมื่อ: ${order.Timestamp}</p>
+              </div>
+              <div class="text-right">
+                <p class="text-sm text-stone-500">ยอดรวม</p>
+                <p class="font-bold text-lg">฿${order.TotalAmount}</p>
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 py-4">
+              <div class="bg-amber-50/70 p-4 rounded-lg border border-amber-100">
+                <p class="text-xs font-bold uppercase text-amber-900 mb-2">รายการหยิบสินค้า (Pick List)</p>
+                <ul class="space-y-1.5 text-sm">
+                  ${order.SKU1_Qty > 0 ? `<li class="flex justify-between font-semibold"><span>• [SKU-01] 70% Dark Chocolate</span> <span class="bg-amber-900 text-white px-2 rounded">x ${order.SKU1_Qty} แท่ง</span></li>` : ''}
+                  ${order.SKU2_Qty > 0 ? `<li class="flex justify-between font-semibold"><span>• [SKU-02] Hazelnut Milk Chocolate</span> <span class="bg-amber-900 text-white px-2 rounded">x ${order.SKU2_Qty} แท่ง</span></li>` : ''}
+                </ul>
+                ${order.Notes ? `<p class="text-xs text-red-600 mt-3 font-medium">* หมายเหตุ: ${order.Notes}</p>` : ''}
+              </div>
+
+              <div class="text-sm">
+                <p class="font-bold text-stone-700">${order.CustomerName} (${order.Phone})</p>
+                <p class="text-stone-600 mt-1">${order.Address}</p>
+                ${order.TrackingNo ? `<p class="mt-2 text-xs font-semibold text-blue-700">เลขพัสดุ: ${order.TrackingNo}</p>` : ''}
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t">
+              <button onclick='openLabel(${JSON.stringify(order).replace(/'/g, "&#39;")})' class="bg-stone-800 text-white px-4 py-2 rounded-lg text-sm hover:bg-black">
+                พิมพ์ใบจ่าหน้าพัสดุ
+              </button>
+              
+              <div class="flex items-center space-x-2">
+                <input type="text" id="track-${order.OrderID}" placeholder="ระบุเลขพัสดุ (ถ้ามี)" value="${order.TrackingNo || ''}" class="border rounded-lg px-3 py-1.5 text-sm">
+                <button onclick="markAsPacked('${order.OrderID}')" class="bg-green-600 text-white px-4 py-1.5 rounded-lg text-sm hover:bg-green-700">
+                  ยืนยันแพ็ค & จัดส่งแล้ว
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function markAsPacked(orderId) {
+      const trackingNo = document.getElementById(`track-${orderId}`).value;
+      if (!confirm(`ยืนยันการแพ็คสินค้าสำหรับออเดอร์ ${orderId} ใช่หรือไม่?`)) return;
+
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'updateStatus',
+          orderId: orderId,
+          status: 'แพ็คแล้ว / จัดส่งแล้ว',
+          trackingNo: trackingNo
+        })
+      });
+      fetchOrders();
+    }
+
+    function openLabel(order) {
+      document.getElementById('lblOrderId').innerText = order.OrderID;
+      document.getElementById('lblName').innerText = order.CustomerName;
+      document.getElementById('lblPhone').innerText = `โทร. ${order.Phone}`;
+      document.getElementById('lblAddress').innerText = order.Address;
+      
+      let items = [];
+      if (order.SKU1_Qty > 0) items.push(`70% Dark (${order.SKU1_Qty})`);
+      if (order.SKU2_Qty > 0) items.push(`Hazelnut Milk (${order.SKU2_Qty})`);
+      document.getElementById('lblItems').innerText = items.join(' / ');
+      document.getElementById('lblNotes').innerText = order.Notes ? `หมายเหตุ: ${order.Notes}` : '';
+
+      const modal = document.getElementById('labelModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('labelModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  </script>
+</body>
+</html>
